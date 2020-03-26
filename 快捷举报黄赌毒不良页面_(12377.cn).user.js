@@ -31,6 +31,35 @@ GM_registerMenuCommand('显示我的净网贡献统计', ShowStatistics, 'S');
 GM_registerMenuCommand('清除统计信息', ClearStatistics, 'D');
 
 if(location.hostname.match('report.12377.cn') && location.pathname.match('toreportinputNormal')) {
+    GM_addStyle(`
+#input_helper {
+    left: 10px;
+    top: 10px;
+    position: fixed;
+    background-color: rgba(120, 210, 120, 0.95);
+    height: 31rem;
+    width: 20rem;
+    z-index: 99999;
+}
+#input_helper_title {
+    text-align: center;
+    font-size: 2rem;
+    margin: 1rem 0rem;
+}
+.input_helper_lists {
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100% - 18rem);
+    background-color: #783dbf;
+}
+.input_helper_items {
+    padding: .5rem 0rem;
+    font-size: medium;
+    margin: 0px 1rem;
+    color: wheat;
+    text-align: left;
+}
+`);
     ShowInputHelperGUI();
 }
 
@@ -122,33 +151,3 @@ function ReportCurrentPage() {
     }
     GM_setValue('r_lists', page_data);
 }
-
-GM_addStyle(`
-#input_helper {
-    left: 10px;
-    top: 10px;
-    position: fixed;
-    background-color: rgba(120, 210, 120, 0.95);
-    height: 31rem;
-    width: 20rem;
-    z-index: 99999;
-}
-#input_helper_title {
-    text-align: center;
-    font-size: 2rem;
-    margin: 1rem 0rem;
-}
-.input_helper_lists {
-    width: 100%;
-    overflow-y: scroll;
-    height: calc(100% - 18rem);
-    background-color: #783dbf;
-}
-.input_helper_items {
-    padding: .5rem 0rem;
-    font-size: medium;
-    margin: 0px 1rem;
-    color: wheat;
-    text-align: left;
-}
-`);
