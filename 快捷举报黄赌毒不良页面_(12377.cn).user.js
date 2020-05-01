@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            快捷举报黄赌毒不良页面 (12377.cn)
 // @namespace       12377.cn
-// @version         1.0
+// @version         1.2
 // @description     快速举报黄、赌、毒、有害网页
 // @author          12377_report
 // @grant           GM_addStyle
@@ -26,64 +26,46 @@ const common_messages = [
 ];
 
 GM_registerMenuCommand('举报当前页面', ReportCurrentPage, 'R');
-GM_registerMenuCommand('--举报须知--', function() { GM_openInTab('http://www.12377.cn/txt/2018-02/05/content_40215072.htm'); }, null);
+GM_registerMenuCommand('--举报须知--', function() { GM_openInTab('https://12377.cn/jbzn.html?tab=4'); }, null);
 GM_registerMenuCommand('显示我的净网贡献统计', ShowStatistics, 'S');
 GM_registerMenuCommand('清除统计信息', ClearStatistics, 'D');
 
-if(location.hostname.match('report.12377.cn') && location.pathname.match('toreportinputNormal')) {
-    GM_addStyle(`
-#input_helper {
-    left: 10px;
-    top: 10px;
-    position: fixed;
-    background-color: rgba(120, 210, 120, 0.95);
-    height: 31rem;
-    width: 20rem;
-    z-index: 99999;
-}
-#input_helper_title {
-    text-align: center;
-    font-size: 2rem;
-    margin: 1rem 0rem;
-}
-.input_helper_lists {
-    width: 100%;
-    overflow-y: scroll;
-    height: calc(100% - 18rem);
-    background-color: #783dbf;
-}
-.input_helper_items {
-    padding: .5rem 0rem;
-    font-size: medium;
-    margin: 0px 1rem;
-    color: wheat;
-    text-align: left;
-}
-`);
+if(location.hostname.match('12377.cn') && location.pathname.match('jbxzxq')) {
     ShowInputHelperGUI();
 }
 
 function ShowInputHelperGUI() {
     var helper_windows_h5code =
-    `<div id="input_helper">
-        <div id="input_helper_title">快速填写举报助理</div>
-        <div id="choice_page_lists" class="input_helper_lists"></div>
-        <hr/>
-        <div id="choice_message_lists" class="input_helper_lists"></div>
-    </div>`;
-    document.body.innerHTML = helper_windows_h5code + document.body.innerHTML;
+    `<div id="input_helper_title">快速填写举报助理</div>
+    <div id="choice_page_lists" class="input_helper_lists"></div><hr/>
+    <div id="choice_message_lists" class="input_helper_lists"></div>`;
+    var root = document.getElementsByTagName('body')[0];
+    var helper = document.createElement('div');
+    root.appendChild(helper);
+    helper.setAttribute("id", "input_helper");
+    helper.innerHTML = helper_windows_h5code;
     var message_boxes = document.getElementById('choice_message_lists');
     for(var idx = 0; idx < common_messages.length; idx++) {
         var item = document.createElement('div');
         item.id = 'message_' + idx;
         item.className = 'input_helper_items';
-        item.innerText = (idx + 1) + '. ' + ShortShowText(common_messages[idx], 32);;
+        item.innerText = (idx + 1) + '. ' + ShortShowText(common_messages[idx], 32);
         message_boxes.appendChild(item);
-        item.addEventListener("click", function(ev) {
+        item.onclick = function(ev) {
             var idx = ev.target.id.match(/message_([0-9]+)/)[1];
-            document.getElementById('content').value = common_messages[idx];
-        });
+            document.getElementById('report_content').value = common_messages[idx];
+        };
     }
+    var hidden_helper = document.createElement('div');
+    root.appendChild(hidden_helper);
+    hidden_helper.setAttribute("id", "hidden_context");
+    hidden_helper.innerText = "助手";
+    hidden_helper.hidden = true;
+    var input_helper_title = document.getElementById("input_helper_title");
+    input_helper_title.onmouseenter = function(ev) {ev.target.innerText = "点此处可缩小窗口";};
+    input_helper_title.onmouseleave = function(ev) {ev.target.innerText = "快速填写举报助理";};
+    input_helper_title.onclick = function(ev) {document.getElementById("hidden_context").hidden = false; document.getElementById("input_helper").hidden = true;};
+    hidden_helper.onclick = function(ev) {document.getElementById("input_helper").hidden = false; document.getElementById("hidden_context").hidden = true;};
     FlushHelperPageLists(null, null, GM_getValue('r_lists', null), null);
     GM_addValueChangeListener('r_lists', FlushHelperPageLists);
 }
@@ -120,15 +102,14 @@ function FlushHelperPageLists(name, old_value, page_data, remote) {
         }
         { // Button
             var item = document.createElement('div');
-            item.className = 'input_helper_items';
+            item.className = 'input_helper_items input_helper_items_button';
             item.innerText = ">| 自动填写 |<";
-            item.style.fontWeight = 1000;
             info.appendChild(item);
             item.addEventListener("click", function(ev) {
                 var page_data = GM_getValue('r_lists', null);
                 if(page_data != null) {
-                    document.getElementById('webname').value = page_data.title;
-                    document.getElementById('pageurl').value = page_data.url;
+                    document.getElementById('website_name').value = page_data.title;
+                    document.getElementById('website_address').value = page_data.url;
                 }
             });
         }
@@ -144,10 +125,60 @@ function ClearStatistics() {
 }
 
 function ReportCurrentPage() {
-    GM_openInTab('http://report.12377.cn:13225/typecatalogSelect.html');
+    GM_openInTab('https://12377.cn/index.html');
     var page_data = {
         url: location.href,
         title: document.title
     }
     GM_setValue('r_lists', page_data);
 }
+
+GM_addStyle(`
+#input_helper {
+    left: 10px;
+    top: 10px;
+    position: fixed;
+    background-color: rgb(47, 117, 246);
+    height: 31rem;
+    width: 20rem;
+    z-index: 99999;
+    border-radius: 5px;
+}
+#input_helper_title {
+    text-align: center;
+    color: white;
+    font-size: 2rem;
+    margin: 1rem 0rem;
+}
+.input_helper_lists {
+    width: 100%;
+    overflow-y: scroll;
+    height: calc(100% - 18rem);
+    background-color: #f9f9f9;
+}
+.input_helper_items {
+    padding: .5rem 0rem;
+    font-size: medium;
+    margin: 0px 1rem;
+    text-align: left;
+}
+.input_helper_items_button {
+    font-weight: 1000;
+    text-align: center;
+    background-color: #2f7af6;
+}
+#hidden_context {
+    left: 10px;
+    top: 10px;
+    position: fixed;
+    background-color: rgb(0, 199, 199);
+    padding: 20px;
+    height: 2rem;
+    width: 2rem;
+    z-index: 99999;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: white;
+    font-weight: 1000;
+}
+`);
