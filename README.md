@@ -13,7 +13,8 @@
 9. 若您想得知举报进度，可自行保存好举报编码
 
 ### 脚本安装
-https://greasyfork.org/zh-CN/scripts/397437-快捷举报黄赌毒不良页面-12377-cn
-https://openuserjs.org/scripts/NoWhyToCopy/快捷举报黄赌毒不良页面_(12377.cn)
+https://greasyfork.org/zh-CN/scripts/397437-快捷举报黄赌毒不良页面-12377-cn  
+https://openuserjs.org/scripts/NoWhyToCopy/快捷举报黄赌毒不良页面_(12377.cn)  
 
 ### 感谢大家为中华人民共和国的互联网生态治理出一份力！
+如果您喜欢这个项目，可以为我们项目点个 Star
